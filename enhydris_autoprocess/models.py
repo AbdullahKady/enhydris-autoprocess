@@ -36,6 +36,13 @@ class AutoProcess(models.Model):
         of its subclasses, i.e. Checks, CurveInterpolation, or Aggregation. Sometimes we
         might have an AutoProcess instance without yet knowing what subclass it is; in
         that case, "myinstance._subclass" is the subclass.
+
+        The method works by following the reverse implied one-to-one relationships
+        created by Django when using multi-table inheritance. If auto_process is an
+        AutoProcess object and there exists a related Checks object, this is accessible
+        as auto_process.checks. So by checking whether the auto_process object ("self"
+        in this case) has a "checks" (or "curveinterpolation", or "aggregation")
+        attribute, we can figure out what the actual subclass is.
         """
         for alternative in ("checks", "curveinterpolation", "aggregation"):
             if hasattr(self, alternative):
